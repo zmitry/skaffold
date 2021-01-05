@@ -19,7 +19,7 @@ jobs:
         if [[ "$str" =~ $regex ]]; then echo "::set-output name=applicable::true"; else echo "::set-output name=applicable::false"; fi
 
   release:
-    if: "${{ needs.check.outputs.applicable }}" == "true"
+    if: ${{ needs.check.outputs.applicable }} == "true"
     name: Create Tag and Draft Release
     runs-on: ubuntu-latest
     steps:
