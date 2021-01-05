@@ -9,7 +9,7 @@ jobs:
     name: Check if release commit
     runs-on: ubuntu-latest
     outputs:
-      is-release: ${{ steps.check-commit-message.outputs.is-release }}
+      applicable: ${{ steps.check-commit-message.outputs.applicable }}
     steps:
     - name: Check commit message
       id: check-commit-message
@@ -17,13 +17,13 @@ jobs:
         str="${{ github.event.head_commit.message }}"
         regex="^release\s*:\s*(v[0-9]+\.[0-9]+\.[0-9]+|[0-9]+\.[0-9]+\.[0-9]+)\s*$"
         if [[ $str =~ $regex ]]; then
-        echo "::set-output name=is-release::true"
+        echo "::set-output name=applicable::true"
         echo This is a release commit.
         fi
 
   release:
     needs: check
-    if: needs.check.outputs.is-release == true
+    if: needs.check.outputs.applicable == true
     name: Create Tag and Draft Release
     runs-on: ubuntu-latest
     steps:
