@@ -15,7 +15,7 @@ jobs:
       run: |
         str=${{ github.event.head_commit.message }}
         regex="^release\s*:\s*(v[0-9]+\.[0-9]+\.[0-9]+|[0-9]+\.[0-9]+\.[0-9]+)\s*$"
-        if [[ $str =~ $regex ]]; then echo "::set-output name=applicable::true"; else echo "::set-output name=applicable::false"
+        if [[ $str =~ $regex ]]; then echo "::set-output name=applicable::true"; else echo "::set-output name=applicable::false"; fi
 
   release:
     if: ${{ needs.check.outputs.applicable }} == "true"
