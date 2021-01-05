@@ -23,7 +23,7 @@ jobs:
 
   release:
     needs: check
-    if: needs.check.outputs.applicable == true
+    if: needs.check.outputs.is-release == true
     name: Create Tag and Draft Release
     runs-on: ubuntu-latest
     steps:
