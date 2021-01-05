@@ -3,7 +3,7 @@ name: create draft release
 on:
   push:
     branches:
-    - master
+    - test-release-activation
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -36,42 +36,3 @@ jobs:
         fi
         echo TAG_NAME="v${t}" >> $GITHUB_ENV
         echo RELEASE_NAME="v${t} Release" >> $GITHUB_ENV
-
-    - name: Create and push Tag
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git tag -a ${{ env.TAG_NAME }} -m "${{ env.RELEASE_NAME }}"
-        git push origin ${{ env.TAG_NAME }}
-
-    - name: Install gsutil
-      run: |
-        curl -Lo $HOME/gsutil.tar.gz https://storage.googleapis.com/pub/gsutil.tar.gz
-        tar xfz $HOME/gsutil.tar.gz -C $HOME
-        echo "$HOME/gsutil" >> $GITHUB_PATH
-
-    - name: Download release artifacts
-      run: |
-        #Wait 60m for all artifacts to be available
-        retries=20
-        found=0
-        while [ $found -lt 10 -a $retries -gt 0 ]
-        do
-        sleep 3m
-        found=$(gsutil du  gs://skaffold/releases/${{ env.TAG_NAME }}/ | wc -l)
-        retries=$((retries-1))
-        done
-        gsutil -m cp -r gs://skaffold/releases/${{ env.TAG_NAME }}/ $HOME
-
-    - name: Create Release
-      shell: bash
-      run: |
-        curl -fsSL https://github.com/github/hub/raw/master/script/get | bash -s 2.14.1
-        body=$(git log -p --follow -1 CHANGELOG.md | grep '^\+' | cut -c 2- | tail -n +2)
-        assets=()
-        for asset in $HOME/${{ env.TAG_NAME }}/*; do
-        assets+=("-a" "$asset")
-        done
-        bin/hub release create "${assets[@]}" -m "${{ env.RELEASE_NAME }}" -m "$body" --draft ${{ env.TAG_NAME }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
