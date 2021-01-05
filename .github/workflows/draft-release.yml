@@ -41,3 +41,10 @@ jobs:
         fi
         echo TAG_NAME="v${t}" >> $GITHUB_ENV
         echo RELEASE_NAME="v${t} Release" >> $GITHUB_ENV
+
+    - name: Create and push Tag
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git tag -a ${{ env.TAG_NAME }} -m "${{ env.RELEASE_NAME }}"
+        git push origin ${{ env.TAG_NAME }}
