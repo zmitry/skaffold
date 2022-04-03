@@ -68,6 +68,8 @@ func (b *Builder) buildSpecForArtifact(ctx context.Context, a *latestV1.Artifact
 
 	case a.JibArtifact != nil:
 		return b.jibBuildSpec(ctx, a, tag, platforms)
+	case a.KoArtifact != nil:
+		return b.koBuildSpec(ctx, a, tag)
 
 	case a.BuildpackArtifact != nil:
 		// TODO: Buildpacks only supports building for platform linux/amd64. See https://github.com/GoogleCloudPlatform/buildpacks/issues/112

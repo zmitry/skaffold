@@ -34,14 +34,14 @@ import (
 )
 
 func (b *Builder) newKoBuilder(ctx context.Context, a *latestV1.Artifact, platforms platform.Matcher) (build.Interface, error) {
-	bo, err := buildOptions(a, b.runMode, platforms)
+	bo, err := BuildOptions(a, b.runMode, platforms)
 	if err != nil {
 		return nil, fmt.Errorf("could not construct ko build options: %v", err)
 	}
 	return commands.NewBuilder(ctx, bo)
 }
 
-func buildOptions(a *latestV1.Artifact, runMode config.RunMode, platforms platform.Matcher) (*options.BuildOptions, error) {
+func BuildOptions(a *latestV1.Artifact, runMode config.RunMode, platforms platform.Matcher) (*options.BuildOptions, error) {
 	buildconfig, err := buildConfig(a)
 	if err != nil {
 		return nil, fmt.Errorf("could not create ko build config: %v", err)
